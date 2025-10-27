@@ -11,7 +11,16 @@ function Header() {
   const USER_EMAIL = "contactdanyael@gmail.com";
 
   useEffect(() => {
+    // Fetch immediately on mount
     fetchMessageCount();
+
+    // Set up interval to refresh every 5 seconds
+    const interval = setInterval(() => {
+      fetchMessageCount();
+    }, 5000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
   }, []);
 
   const fetchMessageCount = async () => {
@@ -41,7 +50,10 @@ function Header() {
           <button
             className="w-10 h-10 bg-medium-gray rounded-full flex items-center justify-center cursor-pointer transition-all hover:bg-gray-300 relative"
             title="Messages"
-            onClick={() => navigate("/messages")}
+            onClick={() => {
+              fetchMessageCount();
+              navigate("/messages");
+            }}
           >
             <MessageSquare size={20} className="text-dark-gray" />
             {messageCount > 0 && (
